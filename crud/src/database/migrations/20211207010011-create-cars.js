@@ -3,7 +3,7 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     
-      await queryInterface.createTable('carro', {
+      await queryInterface.createTable('carros', {
         id:{
             type: Sequelize.INTEGER,
             autoIncrement: true,
@@ -23,15 +23,30 @@ module.exports = {
             type: Sequelize.STRING,
             allowNull:false
         },
-        hasABS:{
+        temabs:{
             type: Sequelize.BOOLEAN,
             allowNull:false
         },
         ano:{
             type: Sequelize.INTEGER,
             allowNull:false
-        }
-    
+        },
+        usuario_id:{
+        type: Sequelize.INTEGER,
+        allowNull:false,
+        references: {model: 'usuarios', key:'id'},
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+      },
+      created_at:{
+          type: Sequelize.DATE,
+          allowNull: false,
+
+      },
+      updated_at:{
+        type: Sequelize.DATE,
+        allowNull: false,
+    }
     });
     
   },

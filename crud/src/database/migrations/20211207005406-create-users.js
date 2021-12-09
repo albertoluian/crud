@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('users', {
+    await queryInterface.createTable('usuarios', {
       id:{
           type: Sequelize.INTEGER,
           autoIncrement: true,
@@ -14,7 +14,7 @@ module.exports = {
           allowNull:false
       }, 
       cpf:{
-          type: Sequelize.INTEGER,
+          type: Sequelize.BIGINT,
           allowNull:false
       }, 
       telefone:{
@@ -24,7 +24,16 @@ module.exports = {
       endereco:{
           type: Sequelize.STRING,
           allowNull:false
-      }
+      },
+      created_at:{
+          type: Sequelize.DATE,
+          allowNull: false,
+
+      },
+      updated_at:{
+        type: Sequelize.DATE,
+        allowNull: false,
+    }
   })
      
   },
