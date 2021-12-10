@@ -6,4 +6,5 @@ const Usuario = require('../models/Usuario');
 Carro.init(connection);
 Usuario.init(connection);
 Carro.associate(connection.models);
+Usuario.associate(connection.models);
 module.exports = connection;

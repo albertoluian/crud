@@ -18,6 +18,22 @@ module.exports = {
     const usuario = await Usuario.findByPk(id).catch(err => { return err});
    
     return res.json(usuario);
+  },
+  async deleteOne(req, res){
+    const { id } = req.params;
+    const usuario = await Usuario.destroy({where: {id:id}}).catch(err => { return err});
+   
+    return res.json(usuario);
+  },
+  async updateOne(req, res){
+    const { id } = req.params;
+    const { nome, cpf, telefone, endereco } = req.body;
+    const usuario = await Usuario.update({
+      nome: nome, cpf: cpf, telefone: telefone, endereco: endereco
+    },
+     {where:{id:id}}
+     ).catch(err => { return err});
+    return res.json(usuario);
   }
    
 };

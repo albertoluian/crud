@@ -13,7 +13,9 @@ class Usuario extends Model {
       )
 
    }
-
+   static associate(models){
+      this.hasMany(models.Carro, {foreignKey: 'usuario_id'})
+  }
 
 }
 module.exports = Usuario;

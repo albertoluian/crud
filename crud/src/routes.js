@@ -15,6 +15,9 @@ routes
 .get('/usuarios/:id', UsuarioController.getOne)
 .get('/carros/:id', CarroController.getOne)
 .delete('/carros/:id', CarroController.deleteOne)
+.delete('/usuarios/:id', UsuarioController.deleteOne)
+.put('/carros/:id', CarroController.updateOne)
+.put('/usuarios/:id', UsuarioController.updateOne)
 ;
 /*
 .put('/usuarios/', async function(req, res) {
