@@ -24,7 +24,5 @@ routes
 
 .delete('/carros/:id', CarroController.deleteOne)
 
-.put('/carros/:id', CarroController.updateOne)
-
-;
+.put('/carros/:id', CarroController.updateOne);
 module.exports = routes;
