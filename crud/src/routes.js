@@ -4,26 +4,27 @@ const UsuarioController = require('./controllers/UsuarioController')
 
 var routes = express.Router();
 routes
+//users
 .get('/usuarios',UsuarioController.getAll)
+
+.get('/usuarios/:id', UsuarioController.getOne)
 
 .post('/usuarios', UsuarioController.store)
 
+.delete('/usuarios/:id', UsuarioController.deleteOne)
+
+.put('/usuarios/:id', UsuarioController.updateOne)
+//carros
 .get('/carros',CarroController.getAll)
+
+.get('/carros/:id', CarroController.getOne)
 
 .post('/carros', CarroController.store)
 
-.get('/usuarios/:id', UsuarioController.getOne)
-.get('/carros/:id', CarroController.getOne)
+
 .delete('/carros/:id', CarroController.deleteOne)
-.delete('/usuarios/:id', UsuarioController.deleteOne)
+
 .put('/carros/:id', CarroController.updateOne)
-.put('/usuarios/:id', UsuarioController.updateOne)
+
 ;
-/*
-.put('/usuarios/', async function(req, res) {
-  res.send('Update the book');
-})
-.delete('/usuarios/', async function(req, res) {
-  res.send('Get a random book');
-});*/
 module.exports = routes;
