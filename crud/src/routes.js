@@ -1,5 +1,5 @@
 const express = require('express');
-const CarroController = require('./controllers/CarroController');
+// const CarroController = require('./controllers/CarroController');
 const UsuarioController = require('./controllers/UsuarioController')
 
 var routes = express.Router();
@@ -8,13 +8,14 @@ routes
 .get('/usuarios',UsuarioController.getAll)
 
 .get('/usuarios/:id', UsuarioController.getOne)
-
+.get('/login', UsuarioController.login)
 .post('/usuarios', UsuarioController.store)
 
-.delete('/usuarios/:id', UsuarioController.deleteOne)
+.delete('/usuarios/', UsuarioController.deleteOne)
 
 .put('/usuarios/:id', UsuarioController.updateOne)
 //carros
+/*
 .get('/carros',CarroController.getAll)
 
 .get('/carros/:id', CarroController.getOne)
@@ -24,5 +25,5 @@ routes
 
 .delete('/carros/:id', CarroController.deleteOne)
 
-.put('/carros/:id', CarroController.updateOne);
+.put('/carros/:id', CarroController.updateOne)*/;
 module.exports = routes;

@@ -1,4 +1,4 @@
-const Carro = require('../models/Carro')
+/*const Carro = require('../models/Carro')
 module.exports = {
    async store(req, res){
      const { marca, cor, placa, temabs, ano, usuario_id } = req.body;
@@ -41,4 +41,4 @@ module.exports = {
     return res.json(carro);
   }
    
-};
+}; */

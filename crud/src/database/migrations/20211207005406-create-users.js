@@ -9,12 +9,20 @@ module.exports = {
           allowNull:false,
           primaryKey: true
       },
+      email:{
+        type: Sequelize.STRING,
+        allowNull:false
+    },
+    senha:{
+      type: Sequelize.STRING,
+      allowNull:false
+  },
       nome:{
           type: Sequelize.STRING,
           allowNull:false
       }, 
       cpf:{
-          type: Sequelize.BIGINT,
+          type: Sequelize.STRING,
           allowNull:false
       }, 
       telefone:{
@@ -25,6 +33,10 @@ module.exports = {
           type: Sequelize.STRING,
           allowNull:false
       },
+      professor:{
+        type: Sequelize.BOOLEAN,
+        allowNull:false
+    },
       created_at:{
           type: Sequelize.DATE,
           allowNull: false,

@@ -1,4 +1,4 @@
-const { Model, DataTypes } = require('sequelize');
+/* const { Model, DataTypes } = require('sequelize');
 
 class Carro extends Model {
    static init(sequelize){
@@ -19,4 +19,4 @@ class Carro extends Model {
    }
 
 }
-module.exports = Carro;
+module.exports = Carro;*/
