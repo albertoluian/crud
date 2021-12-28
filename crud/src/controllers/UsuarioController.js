@@ -1,7 +1,19 @@
 const Usuario = require('../models/Usuario');
 const bcrypt = require('bcryptjs');
 const { Sequelize } = require('sequelize/dist');
+const jwt = require('jsonwebtoken');
+const SECRET = 'validateToken';
 const validar = require('./testaCPF.js');
+function verificarToken(token, id){
+  var resultado = true;
+  jwt.verify(token, SECRET,(err, decoded)=>{
+    if(!err)
+    resultado = true;
+    else
+    resultado = false;
+  });
+    return resultado;
+ }
 module.exports = {
    async store(req, res){
      
@@ -38,14 +50,41 @@ module.exports = {
     }).catch(err => { return err});
     if(usuario){
       const validPass = await bcrypt.compare(senha, usuario.senha)
-        if(validPass)
-        return res.json(usuario);
-    
+        if(validPass){
+         const token = jwt.sign({id:usuario.id}, SECRET,{expiresIn:86400});
+         await Usuario.update({
+          token:token
+        },
+         {where:{id:usuario.id}}
+         ).catch(err => { return err});
+         const usuario1 = await Usuario.findOne({
+          attributes: {exclude: ['senha']},
+          where: {
+            email:email
+          }}).catch(err => { return err});
+         return res.json(usuario1);
+        }
     else
     return res.status(401).json("Nao Autorizado");
     }
     else
     return res.status(401).json("Nao Autorizado");
+  },
+  async logout(req, res){
+  const token = req.headers['authorization'];
+  const {id}= req.params;
+  const verif = verificarToken(token, id);
+  const usuario1 = await Usuario.findByPk(id).catch(err => { return err});
+  if(verif && usuario1.token == token){
+  const usuario = await Usuario.update({
+    token: null
+  },
+   {where:{id:id}}
+   ).catch(err => { return res.json("Erro ao se deslogar")});
+  return res.json("Deslogado com sucesso");
+  }
+  else
+  return res.json("Token invalido");
   },
    async getAll(req, res){
     const usuario = await Usuario.findAll({attributes: {exclude: ['senha']},}).catch(err => { return err});
@@ -84,13 +123,27 @@ module.exports = {
   },
   async updateOne(req, res){
     const { id } = req.params;
-    const { nome, cpf, telefone, endereco } = req.body;
-    const usuario = await Usuario.update({
-      nome: nome, cpf: cpf, telefone: telefone, endereco: endereco
+    const { nome, telefone, endereco } = req.body;
+    const token = req.headers['authorization'];
+    const verif = verificarToken(token, id);
+    console.log(verif);
+    const usuario = await Usuario.findByPk(id).catch(err => { return err});
+    if(verif && usuario.token == token){
+    const usuario1 = await Usuario.update({
+      
+      nome: nome, telefone: telefone, endereco: endereco
     },
      {where:{id:id}}
      ).catch(err => { return err});
-    return res.json(usuario);
+    const usuario3 = await Usuario.findOne({
+      attributes: {exclude: ['senha','token']},
+      where: {
+        id:id
+      }}).catch(err => { return err});
+    return res.json(usuario3);
+  
   }
+  else return res.json("Token invalido");
+  }, 
    
 };

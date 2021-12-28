@@ -8,7 +8,8 @@ routes
 .get('/usuarios',UsuarioController.getAll)
 
 .get('/usuarios/:id', UsuarioController.getOne)
-.get('/login', UsuarioController.login)
+.post('/login', UsuarioController.login)
+.post('/logout/:id', UsuarioController.logout)
 .post('/usuarios', UsuarioController.store)
 
 .delete('/usuarios/', UsuarioController.deleteOne)
