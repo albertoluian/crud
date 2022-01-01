@@ -1,8 +1,10 @@
 const Usuario = require('../models/Usuario');
+const Inscrito = require('../models/Inscrito');
 const bcrypt = require('bcryptjs');
 const { Sequelize } = require('sequelize/dist');
 const jwt = require('jsonwebtoken');
-const SECRET = 'validateToken';
+require('dotenv/config');
+const SECRET = process.env.SEGREDO;
 const validar = require('./testaCPF.js');
 function verificarToken(token, id){
   var resultado = true;
@@ -28,6 +30,8 @@ module.exports = {
     if(testedeCPF){
     if(user){return res.json("credencial ja registrada")} 
     else{
+     const inscritoAprovado = await Inscrito.findOne({where:{email1:email, aprovado:true}});
+     if(inscritoAprovado){
      const hash = await bcrypt.hash(senha, 10);
      const usuario = await Usuario.create({
       email:email, senha:hash, nome: nome, cpf: cpf,
@@ -35,7 +39,9 @@ module.exports = {
      }).catch(err => { return err});
 
      return res.json(usuario);
-   }}
+   }
+   else return res.json("nao autorizado a se cadastrar");
+  }}
   else
    return res.json("CPF invalido");
   },

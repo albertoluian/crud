@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('usuarios', {
+    await queryInterface.createTable('admins', {
       id:{
           type: Sequelize.INTEGER,
           autoIncrement: true,
@@ -17,26 +17,6 @@ module.exports = {
       type: Sequelize.STRING,
       allowNull:false
   },
-      nome:{
-          type: Sequelize.STRING,
-          allowNull:false
-      }, 
-      cpf:{
-          type: Sequelize.STRING,
-          allowNull:false
-      }, 
-      telefone:{
-          type: Sequelize.INTEGER,
-          allowNull:false
-      },
-      endereco:{
-          type: Sequelize.STRING,
-          allowNull:false
-      },
-      professor:{
-        type: Sequelize.BOOLEAN,
-        allowNull:false
-    },
     token:{
       type: Sequelize.STRING,
       allowNull: true
@@ -56,7 +36,7 @@ module.exports = {
 
   down: async (queryInterface, Sequelize) => {
     
-     await queryInterface.dropTable('usuarios');
+     await queryInterface.dropTable('admins');
     
   }
 };
