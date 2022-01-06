@@ -89,17 +89,29 @@ email1:{
       type: Sequelize.STRING,
       allowNull:true
   },
-  curso_de_graduacao:{
+  curso_de_graduacao1:{
     type: Sequelize.STRING,
     allowNull:false
 },
-instituicao_grad:{
+instituicao_grad1:{
   type: Sequelize.STRING,
   allowNull:false
 },
-conclusao_grad:{
+conclusao_grad1:{
   type: Sequelize.INTEGER,
   allowNull:false
+},
+curso_de_graduacao2:{
+  type: Sequelize.STRING,
+  allowNull:true
+},
+instituicao_grad2:{
+type: Sequelize.STRING,
+allowNull:true
+},
+conclusao_grad2:{
+type: Sequelize.INTEGER,
+allowNull:true
 },
 curso_de_especializacao:{
   type: Sequelize.STRING,
