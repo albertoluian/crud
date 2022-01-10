@@ -1,6 +1,5 @@
 const Admin = require('../models/Admin');
 const bcrypt = require('bcryptjs');
-const { Sequelize } = require('sequelize/dist');
 const jwt = require('jsonwebtoken');
 require('dotenv/config');
 const SECRET = process.env.SEGREDO;

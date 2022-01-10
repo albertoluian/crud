@@ -1,7 +1,7 @@
 const Usuario = require('../models/Usuario');
 const Inscrito = require('../models/Inscrito');
 const bcrypt = require('bcryptjs');
-const { Sequelize } = require('sequelize/dist');
+const { Sequelize } = require('sequelize');
 const jwt = require('jsonwebtoken');
 require('dotenv/config');
 const SECRET = process.env.SEGREDO;
