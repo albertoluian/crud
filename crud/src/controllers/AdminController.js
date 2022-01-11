@@ -56,6 +56,7 @@ function verificarToken(token, id){
   const {id}= req.params;
   const verif = verificarToken(token, id);
   const admin1 = await Admin.findByPk(id).catch(err => { return res.status(500).json(err)});
+  if(admin1){
   if(verif && admin1.token == token){
   const admin = await Admin.update({
     token: null
@@ -66,5 +67,7 @@ function verificarToken(token, id){
   }
   else
   return res.status(403).json("Token invalido");
-  },
+  }
+else res.status(404).json("Admin inexistente");
+},
 }
