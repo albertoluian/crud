@@ -81,6 +81,7 @@ module.exports = {
   const {id}= req.params;
   const verif = verificarToken(token, id);
   const usuario1 = await Usuario.findByPk(id).catch(err => { return err});
+  if(usuario1){
   if(verif && usuario1.token == token){
   const usuario = await Usuario.update({
     token: null
@@ -91,7 +92,9 @@ module.exports = {
   }
   else
   return res.json("Token invalido");
-  },
+  }
+  else return res.json("Usuario invalido");
+},
    async getAll(req, res){
     const usuario = await Usuario.findAll({attributes: {exclude: ['senha']},}).catch(err => { return err});
 
@@ -134,6 +137,7 @@ module.exports = {
     const verif = verificarToken(token, id);
     console.log(verif);
     const usuario = await Usuario.findByPk(id).catch(err => { return err});
+    if(usuario){
     if(verif && usuario.token == token){
     const usuario1 = await Usuario.update({
       
@@ -150,6 +154,8 @@ module.exports = {
   
   }
   else return res.json("Token invalido");
-  }, 
+  }
+else return res.json("Usuario invalido");
+}, 
    
 };

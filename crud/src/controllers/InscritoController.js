@@ -128,7 +128,7 @@ module.exports = {
     const token = req.headers['authorization'];
     const verif = verificarToken(token);
     const admin = await Admin.findOne({where:{token:token}}).catch(err => {return res.status(500).json(err)});
-    if(verif && admin.token == token){
+    if(verif && admin){
     const inscritos = await Inscrito.findAll().catch(err =>{ return res.status(500).json(err)});
     return res.json(inscritos);
     }
@@ -140,7 +140,7 @@ async aprove(req, res){
   const token = req.headers['authorization'];
   const verif = verificarToken(token);
   const admin = await Admin.findOne({where:{token:token}}).catch(err => {return res.status(500).json(err)});
-  if(verif && admin.token == token){
+  if(verif && admin){
     const inscritos1 = await Inscrito.findOne({where:{id:id}}).catch(err=>{return res.status(500).json(err)});
   if(inscritos1){
   const inscritos = await Inscrito.update({aprovado:true},{where:{id:id}}).catch(err =>{ return res.status(500).json(err)});
