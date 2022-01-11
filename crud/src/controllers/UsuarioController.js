@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 require('dotenv/config');
 const SECRET = process.env.SEGREDO;
 const validar = require('./testaCPF.js');
+const nodemailer = require('nodemailer');
 function verificarToken(token, id){
   var resultado = true;
   jwt.verify(token, SECRET,(err, decoded)=>{
@@ -153,9 +154,66 @@ module.exports = {
     return res.json(usuario3);
   
   }
-  else return res.json("Token invalido");
+  else return res.status(403).json("Token invalido");
   }
-else return res.json("Usuario invalido");
+else return res.status(404).json("Usuario invalido");
 }, 
-   
+async esqueciSenha(req, res) {
+  const { email } = req.body;
+  const usuario = await Usuario.findOne({where:{email: email}}).catch(err =>{return err});
+  if(!usuario)
+  return res.status(404).json("Este email nao pertence a nenhum usuario");
+  else{
+  const randomstring = Math.random().toString(36).slice(-8);
+  let transport = nodemailer.createTransport({
+    service: "gmail",
+    auth:{
+      user:process.env.GMAIL_USER,
+      pass:process.env.GMAIL_PASS
+    },
+    tls:{
+      rejectUnauthorized:false
+    }
+  });
+  const token = jwt.sign({id:usuario.id}, SECRET,{expiresIn:86400});
+  
+    const usuario2 = await Usuario.update({
+          token:token
+        },
+         {where:{id:usuario.id}
+        }).catch(err => { return err});
+  let mailOptions = {
+    from: process.env.GMAIL_USER,
+    to: email,
+    subject: "Recuperar senha - PPGCN",
+    text: `Sua nova senha é ${randomstring}, após confirmar a senha, logue-se e altere sua senha\nPara confirmar a troca de senha clique no link a seguir: http://localhost:${process.env.PORTA}/confirmarSenha/${usuario.id}/${randomstring}/${token}`
+  }
+  transport.sendMail(mailOptions, function(err, success){
+    if(err){
+      return err;
+    }
+    else
+    return res.json("Email enviado");
+  })
+  }
+},
+async confirmarSenha(req, res) {
+  const {id, senha, token } = req.params;
+  const verif = verificarToken(token);
+  const usuario = await Usuario.findOne({where:{id:id}}).catch(err =>{return err});
+  if(usuario){
+   if(usuario.token == token && verif ){
+    const hash = await bcrypt.hash(senha, 10);
+    const usuario1 = await Usuario.update({
+     senha:hash,
+    },
+     {where:{id:id}}
+     ).catch(err => { return err});
+     return res.json("Senha atualizada com sucesso!!!");
+   }
+   else return res.status(403).json("Token invalido");
+
+  }
+  else return res.status(404).json("Usuario nao encontrado");
+},   
 };

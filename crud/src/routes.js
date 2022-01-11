@@ -9,10 +9,11 @@ routes
 .get('/usuarios',UsuarioController.getAll)
 
 .get('/usuarios/:id', UsuarioController.getOne)
+.get('/confirmarSenha/:id/:senha/:token', UsuarioController.confirmarSenha)
 .post('/login', UsuarioController.login)
 .post('/logout/:id', UsuarioController.logout)
 .post('/usuarios', UsuarioController.store)
-
+.post('/esqueciSenha', UsuarioController.esqueciSenha)
 .delete('/usuarios/', UsuarioController.deleteOne)
 
 .put('/usuarios/:id', UsuarioController.updateOne)
