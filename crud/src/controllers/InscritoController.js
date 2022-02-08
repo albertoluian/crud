@@ -18,6 +18,7 @@ function verificarToken(token, id){
  }
 module.exports = {
    async store(req, res){
+   
        const {
         nome,
         nomeMae,
@@ -65,8 +66,8 @@ module.exports = {
         exclusivo,
         concorreraABolsa,
         realizaraSemBolsa,
-        } = req.body;
-     
+        } =  JSON.parse(req.body.dados);
+       console.log(req.files);
        const inscritos = await Inscrito.findOne({where:Sequelize.or(
          {email1:email1},{cpf:cpf},{telefone:telefone},{rg:rg},
          )
@@ -122,8 +123,9 @@ module.exports = {
         concorreraABolsa,
         realizaraSemBolsa,})
        .catch(err =>{ return res.status(500).json(err); });
-       return res.json(inscrito);
-   }},
+     return res.sendFile(`${req.files[0].path}`).catch(err =>{ return res.json(err)});
+       
+      }},
   async getAll(req, res){
     const token = req.headers['authorization'];
     const verif = verificarToken(token);

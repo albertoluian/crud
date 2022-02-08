@@ -3,6 +3,8 @@ const express = require('express');
 const UsuarioController = require('./controllers/UsuarioController')
 const InscritoController = require('./controllers/InscritoController');
 const AdminController = require('./controllers/AdminController');
+const multer = require('multer')
+const multerConfig = require('./config/multer')
 var routes = express.Router();
 routes
 //users
@@ -19,7 +21,7 @@ routes
 .put('/usuarios/:id', UsuarioController.updateOne)
 //inscritos
 .get('/inscritos', InscritoController.getAll)
-.post('/inscritos', InscritoController.store)
+.post('/inscritos', multer(multerConfig).array('file',4), InscritoController.store)
 .post('/inscritos/aprovar/:id', InscritoController.aprove)
 // admin
 .post('/admin', AdminController.store)

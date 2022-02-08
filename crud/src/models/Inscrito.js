@@ -49,7 +49,7 @@ class Inscrito extends Model {
          exclusivo:DataTypes.BOOLEAN,
          concorreraABolsa:DataTypes.BOOLEAN,
          realizaraSemBolsa:DataTypes.BOOLEAN,
-         aprovado:DataTypes.BOOLEAN
+         aprovado:DataTypes.BOOLEAN,
       },{
       sequelize
        }
