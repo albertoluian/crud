@@ -4,7 +4,8 @@ const UsuarioController = require('./controllers/UsuarioController')
 const InscritoController = require('./controllers/InscritoController');
 const AdminController = require('./controllers/AdminController');
 const multer = require('multer')
-const multerConfig = require('./config/multer')
+const multerConfig = require('./config/multer');
+const Usuario = require('./models/Usuario');
 var routes = express.Router();
 routes
 //users
@@ -12,12 +13,13 @@ routes
 
 .get('/usuarios/:id', UsuarioController.getOne)
 .get('/confirmarSenha/:id/:senha/:token', UsuarioController.confirmarSenha)
+.get('/confirmarEmail/:id/:token', UsuarioController.confirmarEmail)
+.post('/reenviarEmail', UsuarioController.reenviarEmail)
 .post('/login', UsuarioController.login)
 .post('/logout/:id', UsuarioController.logout)
 .post('/usuarios', UsuarioController.store)
 .post('/esqueciSenha', UsuarioController.esqueciSenha)
 .delete('/usuarios/', UsuarioController.deleteOne)
-
 .put('/usuarios/:id', UsuarioController.updateOne)
 //inscritos
 .get('/inscritos', InscritoController.getAll)

@@ -38,13 +38,105 @@ module.exports = {
       email:email, senha:hash, nome: nome, cpf: cpf,
       telefone: telefone, endereco: endereco, professor:professor
      }).catch(err => { return err});
-
-     return res.json(usuario);
+     let transport = nodemailer.createTransport({
+    service: "gmail",
+    auth:{
+      user:process.env.GMAIL_USER,
+      pass:process.env.GMAIL_PASS
+    },
+    tls:{
+      rejectUnauthorized:false
+    }
+  });
+  const token = jwt.sign({id:usuario.id}, SECRET,{expiresIn:86400});
+  
+    const usuario2 = await Usuario.update({
+          token:token
+        },
+         {where:{id:usuario.id}
+        }).catch(err => { return err});
+  let mailOptions = {
+    from: process.env.GMAIL_USER,
+    to: email,
+    subject: "Confirmar email - PPGCN",
+    text: `\nPara confirmar o email, clique no link a seguir: http://localhost:${process.env.PORTA}/confirmarEmail/${usuario.id}/${token}`
+  }
+  transport.sendMail(mailOptions, function(err, success){
+    if(err){
+      return err;
+    }
+    else
+    return res.json("Foi enviado um email de confirmação, por favor cheque sua caixa de entrada!");
+  })
+  
+    
    }
    else return res.json("nao autorizado a se cadastrar");
   }}
   else
    return res.json("CPF invalido");
+  },
+  async reenviarEmail(req, res){
+    const email = req.body.email;
+    console.log(email);
+    const usuario = await Usuario.findOne({where:{ email:email}}).catch(err => { return err});
+    
+    if (usuario){
+    let transport = nodemailer.createTransport({
+      service: "gmail",
+      auth:{
+        user:process.env.GMAIL_USER,
+        pass:process.env.GMAIL_PASS
+      },
+      tls:{
+        rejectUnauthorized:false
+      }
+    });
+    const token = jwt.sign({id:usuario.id}, SECRET,{expiresIn:86400});
+    
+      const usuario2 = await Usuario.update({
+            token:token
+          },
+           {where:{id:usuario.id}
+          }).catch(err => { return err});
+    let mailOptions = {
+      from: process.env.GMAIL_USER,
+      to: email,
+      subject: "Confirmar email - PPGCN",
+      text: `\nPara confirmar o email, clique no link a seguir: http://localhost:${process.env.PORTA}/confirmarEmail/${usuario.id}/${token}`
+    }
+    transport.sendMail(mailOptions, function(err, success){
+      if(err){
+        return err;
+      }
+      else
+      return res.json("Foi enviado um email de confirmação, por favor cheque sua caixa de entrada!");
+    })}
+    else{
+    
+    console.log("c");
+      return res.status(404).json("Usuario nao encontrado");
+
+    }
+  },
+
+  async confirmarEmail(req, res){
+    const { id, token } = req.params;
+    const verif = verificarToken(token);
+    if(verif){
+    const usuario = await Usuario.findOne({where:{id:id, token: token}}).catch(err =>{return err});
+    if(usuario){
+      const usuario1 = await Usuario.update({
+       confirmado:true,
+      },
+       {where:{id:id}}
+       ).catch(err => { return err});
+       return res.json("Email confimado com sucesso!!!");
+     
+    }
+    else return res.status(404).json("Usuario nao encontrado");
+  }
+  else return res.status(401).json("Nao autorizado, token invalido");
   },
    async login(req, res){
     const { email, senha } = req.body;
@@ -58,6 +150,7 @@ module.exports = {
     if(usuario){
       const validPass = await bcrypt.compare(senha, usuario.senha)
         if(validPass){
+          if(usuario.confirmado){
          const token = jwt.sign({id:usuario.id}, SECRET,{expiresIn:86400});
          await Usuario.update({
           token:token
@@ -71,6 +164,9 @@ module.exports = {
           }}).catch(err => { return err});
          return res.json(usuario1);
         }
+      else
+    return res.status(401).json("Confirme seu email.")
+  }
     else
     return res.status(401).json("Nao Autorizado");
     }

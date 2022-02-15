@@ -16,7 +16,8 @@ class Usuario extends Model {
          telefone: DataTypes.INTEGER,
          endereco:DataTypes.STRING,
          professor:DataTypes.BOOLEAN,
-         token: DataTypes.STRING
+         token: DataTypes.STRING,
+         confirmado: DataTypes.BOOLEAN
       },{
       sequelize
        }

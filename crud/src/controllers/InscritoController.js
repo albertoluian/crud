@@ -18,7 +18,6 @@ function verificarToken(token, id){
  }
 module.exports = {
    async store(req, res){
-   
        const {
         nome,
         nomeMae,
@@ -129,11 +128,15 @@ module.exports = {
   async getAll(req, res){
     const token = req.headers['authorization'];
     const verif = verificarToken(token);
+    if(verif){
     const admin = await Admin.findOne({where:{token:token}}).catch(err => {return res.status(500).json(err)});
-    if(verif && admin){
+    if(admin){
     const inscritos = await Inscrito.findAll().catch(err =>{ return res.status(500).json(err)});
     return res.json(inscritos);
     }
+    else 
+    return res.status(403).json("Token invalido");
+  }
     else
     return res.status(403).json("Token invalido");
   },

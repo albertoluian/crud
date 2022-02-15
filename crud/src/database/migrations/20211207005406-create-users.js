@@ -49,7 +49,11 @@ module.exports = {
       updated_at:{
         type: Sequelize.DATE,
         allowNull: false,
-    }
+    },
+    confirmado:{
+      type: Sequelize.BOOLEAN,
+      allowNull:true
+  }
   })
      
   },
