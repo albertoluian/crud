@@ -140,7 +140,7 @@ module.exports = {
        return res.json("Email confimado com sucesso!!!");
      
     }
-    else return res.status(404).json("Usuario nao encontrado");
+    else return res.status(404).json("Usuario inexistente ou token invalido");
   }
   else return res.status(401).json("Nao autorizado, token invalido");
 }
@@ -236,8 +236,8 @@ catch(e){
   },
   async deleteOne(req, res, next){
     try{
-    const { email, senha } = req.body;
-    
+    const { email } = req.body;
+    const token = req.headers['authorization'];
     const usuario = await Usuario.findOne({
      
       where: {
@@ -245,18 +245,17 @@ catch(e){
       }
     }).catch(err => { throw new Error (err)});
     if(usuario){
-      const validPass = await bcrypt.compare(senha, usuario.senha)
-        if(validPass){
+      const verif = verificarToken(token, usuario.id);
+        if(verif && token == usuario.token){
           const id = usuario.id;
           const user = await Usuario.destroy({where: {id:id}}).catch(err => { throw new Error (err)});
           return res.json(user);
         }
-    
     else
-    return res.status(401).json("Nao Autorizado");
+    return res.status(403).json("Token invalido");
     }
     else
-    return res.status(401).json("Nao Autorizado");
+    return res.status(404).json("Usuario nao encontrado");
     
   }
   catch(e){
