@@ -29,7 +29,7 @@ module.exports = {
     }).catch(err => { throw new Error (err)});
     const testedeCPF = validar.TestaCPF(cpf);
     if(testedeCPF){
-    if(user){return res.json("credencial ja registrada")} 
+    if(user){return res.status(409).json("credencial ja registrada")} 
     else{
      const inscritoAprovado = await Inscrito.findOne({where:{email1:email, aprovado:true}});
      if(inscritoAprovado){
@@ -71,10 +71,10 @@ module.exports = {
   
     
    }
-   else return res.json("nao autorizado a se cadastrar");
+   else return res.status(403).json("nao autorizado a se cadastrar");
   }}
   else
-   return res.json("CPF invalido");
+   return res.status(400).json("CPF invalido");
   }
   catch(e){
     console.log(e);
