@@ -15,17 +15,22 @@ function verificarToken(token, id){
     return resultado;
  }
  module.exports ={
-    async store(req, res){
-     
+    async store(req, res, next){
+     try{
         const {email, senha} = req.body;
         const hash = await bcrypt.hash(senha, 10);
         const admin = await Admin.create({
          email:email, senha:hash,
-        }).catch(err => { return res.status(500).json(err)});
+        }).catch(err => { throw new Error (err)});
         return res.json(admin);
-     },
- async login(req, res){
-   console.log(SECRET);
+      }
+      catch(e){
+        console.log(e);
+        next(e);
+      }
+      },
+ async login(req, res, next){
+   try{
     const { email, senha } = req.body;
     
     const admin = await Admin.findOne({     
@@ -41,7 +46,7 @@ function verificarToken(token, id){
           token:token
         },
          {where:{id:admin.id}}
-         ).catch(err => { return res.status(500).json(err)});
+         ).catch(err => { throw new Error (err)});
         
          return res.json(token);
         }
@@ -50,24 +55,33 @@ function verificarToken(token, id){
     }
     else
     return res.status(401).json("Nao Autorizado");
-  },
-  async logout(req, res){
+  }
+  catch(e){
+    console.log(e);
+    next(e);
+  }},
+  async logout(req, res, next){
+    try{
   const token = req.headers['authorization'];
   const {id}= req.params;
   const verif = verificarToken(token, id);
-  const admin1 = await Admin.findByPk(id).catch(err => { return res.status(500).json(err)});
+  const admin1 = await Admin.findByPk(id).catch(err => { throw new Error (err)});
   if(admin1){
   if(verif && admin1.token == token){
   const admin = await Admin.update({
     token: null
   },
    {where:{id:id}}
-   ).catch(err => { return res.status(500).json("Erro ao se deslogar")});
+   ).catch(err => { throw new Error (err)});
   return res.json("Deslogado com sucesso");
   }
   else
   return res.status(403).json("Token invalido");
   }
 else res.status(404).json("Admin inexistente");
-},
+}
+catch(e){
+  console.log(e);
+  next(e);
+}},
 }

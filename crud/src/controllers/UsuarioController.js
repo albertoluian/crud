@@ -18,15 +18,15 @@ function verificarToken(token, id){
     return resultado;
  }
 module.exports = {
-   async store(req, res){
-     
+   async store(req, res, next){
+     try{
      const { email, senha, nome, cpf, telefone, endereco, professor } = req.body;
      const user = await Usuario.findOne({
      
       where: Sequelize.or(
         {email:email},{cpf:cpf},{telefone:telefone}
       )
-    }).catch(err => { return err});
+    }).catch(err => { throw new Error (err)});
     const testedeCPF = validar.TestaCPF(cpf);
     if(testedeCPF){
     if(user){return res.json("credencial ja registrada")} 
@@ -37,7 +37,7 @@ module.exports = {
      const usuario = await Usuario.create({
       email:email, senha:hash, nome: nome, cpf: cpf,
       telefone: telefone, endereco: endereco, professor:professor
-     }).catch(err => { return err});
+     }).catch(err => { throw new Error (err)});
      let transport = nodemailer.createTransport({
     service: "gmail",
     auth:{
@@ -54,7 +54,7 @@ module.exports = {
           token:token
         },
          {where:{id:usuario.id}
-        }).catch(err => { return err});
+        }).catch(err => { throw new Error (err)});
   let mailOptions = {
     from: process.env.GMAIL_USER,
     to: email,
@@ -63,7 +63,7 @@ module.exports = {
   }
   transport.sendMail(mailOptions, function(err, success){
     if(err){
-      return err;
+      throw new Error (err)
     }
     else
     return res.json("Foi enviado um email de confirmação, por favor cheque sua caixa de entrada!");
@@ -75,11 +75,16 @@ module.exports = {
   }}
   else
    return res.json("CPF invalido");
-  },
-  async reenviarEmail(req, res){
+  }
+  catch(e){
+    console.log(e);
+    next(e);
+  }},
+  async reenviarEmail(req, res, next){
+    try{
     const email = req.body.email;
     console.log(email);
-    const usuario = await Usuario.findOne({where:{ email:email}}).catch(err => { return err});
+    const usuario = await Usuario.findOne({where:{ email:email}}).catch(err => { throw new Error (err)});
     
     if (usuario){
     let transport = nodemailer.createTransport({
@@ -98,7 +103,7 @@ module.exports = {
             token:token
           },
            {where:{id:usuario.id}
-          }).catch(err => { return err});
+          }).catch(err => { throw new Error (err)});
     let mailOptions = {
       from: process.env.GMAIL_USER,
       to: email,
@@ -107,38 +112,44 @@ module.exports = {
     }
     transport.sendMail(mailOptions, function(err, success){
       if(err){
-        return err;
+        throw new Error (err)
       }
       else
       return res.json("Foi enviado um email de confirmação, por favor cheque sua caixa de entrada!");
     })}
     else{
-    
-    console.log("c");
       return res.status(404).json("Usuario nao encontrado");
-
     }
-  },
-
-  async confirmarEmail(req, res){
+  }
+  catch(e){
+    console.log(e);
+    next(e);
+  }},
+  async confirmarEmail(req, res, next){
+    try{
     const { id, token } = req.params;
     const verif = verificarToken(token);
     if(verif){
-    const usuario = await Usuario.findOne({where:{id:id, token: token}}).catch(err =>{return err});
+    const usuario = await Usuario.findOne({where:{id:id, token: token}}).catch(err => { throw new Error (err)});
     if(usuario){
       const usuario1 = await Usuario.update({
        confirmado:true,
       },
        {where:{id:id}}
-       ).catch(err => { return err});
+       ).catch(err => { throw new Error (err)});
        return res.json("Email confimado com sucesso!!!");
      
     }
     else return res.status(404).json("Usuario nao encontrado");
   }
   else return res.status(401).json("Nao autorizado, token invalido");
-  },
-   async login(req, res){
+}
+catch(e){
+  console.log(e);
+  next(e);
+}},
+   async login(req, res, next){
+     try{
     const { email, senha } = req.body;
     
     const usuario = await Usuario.findOne({
@@ -146,7 +157,7 @@ module.exports = {
       where: {
         email:email
       }
-    }).catch(err => { return err});
+    }).catch(err => { throw new Error (err)});
     if(usuario){
       const validPass = await bcrypt.compare(senha, usuario.senha)
         if(validPass){
@@ -156,12 +167,12 @@ module.exports = {
           token:token
         },
          {where:{id:usuario.id}}
-         ).catch(err => { return err});
+         ).catch(err => { throw new Error (err)});
          const usuario1 = await Usuario.findOne({
           attributes: {exclude: ['senha']},
           where: {
             email:email
-          }}).catch(err => { return err});
+          }}).catch(err => { throw new Error (err)});
          return res.json(usuario1);
         }
       else
@@ -172,38 +183,59 @@ module.exports = {
     }
     else
     return res.status(401).json("Nao Autorizado");
-  },
-  async logout(req, res){
+  }
+  catch(e){
+    console.log(e);
+    next(e);
+  }},
+  async logout(req, res, next){
+    try{
   const token = req.headers['authorization'];
   const {id}= req.params;
   const verif = verificarToken(token, id);
-  const usuario1 = await Usuario.findByPk(id).catch(err => { return err});
+  const usuario1 = await Usuario.findByPk(id).catch(err => { throw new Error (err)});
   if(usuario1){
   if(verif && usuario1.token == token){
   const usuario = await Usuario.update({
     token: null
   },
    {where:{id:id}}
-   ).catch(err => { return res.json("Erro ao se deslogar")});
+   ).catch(err => { throw new Error (err)});
   return res.json("Deslogado com sucesso");
   }
   else
-  return res.json("Token invalido");
+  return res.status(401).json("Token invalido");
   }
-  else return res.json("Usuario invalido");
-},
-   async getAll(req, res){
-    const usuario = await Usuario.findAll({attributes: {exclude: ['senha']},}).catch(err => { return err});
+  else return res.status(404).json("Usuario invalido");
+}
+catch(e){
+  console.log(e);
+  next(e);
+}},
+   async getAll(req, res, next){
+     try{
+    const usuario = await Usuario.findAll({attributes: {exclude: ['senha']},}).catch(err => { throw new Error (err)});
 
     return res.json(usuario);
-  },
-  async getOne(req, res){
+  }
+  catch(e){
+    console.log(e);
+    next(e);
+  }},
+  async getOne(req, res, next){
+    try{
     const { id } = req.params;
-    const usuario = await Usuario.findByPk(id).catch(err => { return err});
+    const usuario = await Usuario.findByPk(id).catch(err => { throw new Error (err)});
    
     return res.json(usuario);
+  }
+  catch(e){
+    console.log(e);
+    next(e);
+  }
   },
-  async deleteOne(req, res){
+  async deleteOne(req, res, next){
+    try{
     const { email, senha } = req.body;
     
     const usuario = await Usuario.findOne({
@@ -211,12 +243,12 @@ module.exports = {
       where: {
         email:email
       }
-    }).catch(err => { return err});
+    }).catch(err => { throw new Error (err)});
     if(usuario){
       const validPass = await bcrypt.compare(senha, usuario.senha)
         if(validPass){
           const id = usuario.id;
-          const user = await Usuario.destroy({where: {id:id}}).catch(err => { return err});
+          const user = await Usuario.destroy({where: {id:id}}).catch(err => { throw new Error (err)});
           return res.json(user);
         }
     
@@ -226,14 +258,19 @@ module.exports = {
     else
     return res.status(401).json("Nao Autorizado");
     
-  },
-  async updateOne(req, res){
+  }
+  catch(e){
+    console.log(e);
+    next(e);
+  }},
+  async updateOne(req, res, next){
+    try{
     const { id } = req.params;
     const { nome, telefone, endereco } = req.body;
     const token = req.headers['authorization'];
     const verif = verificarToken(token, id);
     console.log(verif);
-    const usuario = await Usuario.findByPk(id).catch(err => { return err});
+    const usuario = await Usuario.findByPk(id).catch(err => { throw new Error (err)});
     if(usuario){
     if(verif && usuario.token == token){
     const usuario1 = await Usuario.update({
@@ -241,22 +278,27 @@ module.exports = {
       nome: nome, telefone: telefone, endereco: endereco
     },
      {where:{id:id}}
-     ).catch(err => { return err});
+     ).catch(err => { throw new Error (err)});
     const usuario3 = await Usuario.findOne({
       attributes: {exclude: ['senha','token']},
       where: {
         id:id
-      }}).catch(err => { return err});
+      }}).catch(err => { throw new Error (err)});
     return res.json(usuario3);
   
   }
   else return res.status(403).json("Token invalido");
   }
 else return res.status(404).json("Usuario invalido");
-}, 
-async esqueciSenha(req, res) {
+}
+catch(e){
+  console.log(e);
+  next(e);
+}}, 
+async esqueciSenha(req, res, next) {
+  try{
   const { email } = req.body;
-  const usuario = await Usuario.findOne({where:{email: email}}).catch(err =>{return err});
+  const usuario = await Usuario.findOne({where:{email: email}}).catch(err => { throw new Error (err)});
   if(!usuario)
   return res.status(404).json("Este email nao pertence a nenhum usuario");
   else{
@@ -277,7 +319,7 @@ async esqueciSenha(req, res) {
           token:token
         },
          {where:{id:usuario.id}
-        }).catch(err => { return err});
+        }).catch(err => { throw new Error (err)});
   let mailOptions = {
     from: process.env.GMAIL_USER,
     to: email,
@@ -286,17 +328,22 @@ async esqueciSenha(req, res) {
   }
   transport.sendMail(mailOptions, function(err, success){
     if(err){
-      return err;
+      throw new Error (err)
     }
     else
     return res.json("Email enviado");
   })
   }
-},
-async confirmarSenha(req, res) {
+}
+catch(e){
+  console.log(e);
+  next(e);
+}},
+async confirmarSenha(req, res, next) {
+  try{
   const {id, senha, token } = req.params;
   const verif = verificarToken(token);
-  const usuario = await Usuario.findOne({where:{id:id}}).catch(err =>{return err});
+  const usuario = await Usuario.findOne({where:{id:id}}).catch(err => { throw new Error (err)});
   if(usuario){
    if(usuario.token == token && verif ){
     const hash = await bcrypt.hash(senha, 10);
@@ -304,12 +351,16 @@ async confirmarSenha(req, res) {
      senha:hash,
     },
      {where:{id:id}}
-     ).catch(err => { return err});
+     ).catch(err => { throw new Error (err)});
      return res.json("Senha atualizada com sucesso!!!");
    }
    else return res.status(403).json("Token invalido");
 
   }
   else return res.status(404).json("Usuario nao encontrado");
-},   
+}
+catch(e){
+  console.log(e);
+  next(e);
+}},   
 };
