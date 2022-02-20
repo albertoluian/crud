@@ -1,5 +1,4 @@
 const express = require('express');
-// const CarroController = require('./controllers/CarroController');
 const UsuarioController = require('./controllers/UsuarioController')
 const InscritoController = require('./controllers/InscritoController');
 const AdminController = require('./controllers/AdminController');
@@ -29,16 +28,4 @@ routes
 .post('/admin', AdminController.store)
 .post('/admin/login', AdminController.login)
 .post('/admin/logout/:id', AdminController.logout)
-//carros
-/*
-.get('/carros',CarroController.getAll)
-
-.get('/carros/:id', CarroController.getOne)
-
-.post('/carros', CarroController.store)
-
-
-.delete('/carros/:id', CarroController.deleteOne)
-
-.put('/carros/:id', CarroController.updateOne)*/;
 module.exports = routes;
