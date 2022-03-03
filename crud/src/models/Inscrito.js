@@ -49,6 +49,15 @@ class Inscrito extends Model {
          exclusivo:DataTypes.BOOLEAN,
          concorreraABolsa:DataTypes.BOOLEAN,
          realizaraSemBolsa:DataTypes.BOOLEAN,
+         foto:DataTypes.STRING,
+         termo:DataTypes.STRING,
+         taxaOuIsencao:DataTypes.STRING,
+         identificacao:DataTypes.STRING,
+         ComprovanteVotacao:DataTypes.STRING,
+         historicoEscolar:DataTypes.STRING,
+         documentosComprobatorios:DataTypes.STRING,
+         reservista:DataTypes.STRING,
+         vinculoUece:DataTypes.STRING,
          aprovado:DataTypes.BOOLEAN,
       },{
       sequelize

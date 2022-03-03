@@ -37,7 +37,7 @@ function verificarToken(token, id){
       where: {
         email:email
       }
-    }).catch(err => { return err});
+    }).catch(err => { throw new Error (err)});
     if(admin){
       const validPass = await bcrypt.compare(senha, admin.senha)
         if(validPass){

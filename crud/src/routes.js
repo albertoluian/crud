@@ -22,7 +22,7 @@ routes
 .put('/usuarios/:id', UsuarioController.updateOne)
 //inscritos
 .get('/inscritos', InscritoController.getAll)
-.post('/inscritos', multer(multerConfig).array('file',4), InscritoController.store)
+.post('/inscritos', multer(multerConfig).array('file',9), InscritoController.store)
 .post('/inscritos/aprovar/:id', InscritoController.aprove)
 // admin
 .post('/admin', AdminController.store)

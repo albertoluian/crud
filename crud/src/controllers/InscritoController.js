@@ -21,6 +21,7 @@ module.exports = {
      try{
        const {
         nome,
+        sexo,
         nomeMae,
         nomePai,
         naturalidade,
@@ -76,6 +77,25 @@ module.exports = {
          return res.status(409).json({error: "Dados ja cadastrados"});
        }
        else{
+       const foto = req.files[0].path;
+       const termo = req.files[1].path;
+       const taxaOuIsencao = req.files[2].path;
+       const identificacao = req.files[3].path;
+       const ComprovanteVotacao = req.files[4].path;
+       const historicoEscolar = req.files[5].path;
+       const documentosComprobatorios = req.files[6].path;
+       var reservista = null;
+       var vinculoUece = null;
+       if(sexo=='M'){
+       if(req.files[7])
+       reservista = req.files[7].path;
+       
+       if(req.files[8])
+       vinculoUece = req.files[8].path;
+       }
+       else if(sexo == 'F')
+       if(req.files[7])
+       vinculoUece = req.files[7].path;
        const inscrito = await Inscrito.create({nome,
         nomeMae,
         nomePai,
@@ -121,7 +141,17 @@ module.exports = {
         trabalhara,
         exclusivo,
         concorreraABolsa,
-        realizaraSemBolsa,})
+        realizaraSemBolsa,
+        foto,
+        termo,
+        taxaOuIsencao,
+        identificacao,
+        ComprovanteVotacao,
+        historicoEscolar,
+        documentosComprobatorios,
+        reservista,
+        vinculoUece
+        })
         .catch(err => { throw new Error (err)});
      return res.sendFile(`${req.files[0].path}`);
        
