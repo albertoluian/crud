@@ -5,7 +5,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 require('dotenv/config');
 require('express-async-errors');
-const port = process.env.PORTA;
+const port = process.env.PORT ? process.env.PORT : process.env.PORTA;
 require('./database');
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
