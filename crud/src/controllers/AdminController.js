@@ -48,7 +48,7 @@ function verificarToken(token, id){
          {where:{id:admin.id}}
          ).catch(err => { throw new Error (err)});
         
-         return res.json(token);
+         return res.json({data:{"token":token,"id":admin.id}});
         }
     else
     return res.status(401).json("Nao Autorizado");
