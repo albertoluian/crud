@@ -4,6 +4,7 @@ class Inscrito extends Model {
    static init(sequelize){
       super.init({
          nome: DataTypes.STRING,
+         sexo: DataTypes.STRING,
          nomeMae: DataTypes.STRING,
          nomePai: DataTypes.STRING,
          naturalidade: DataTypes.STRING,
