@@ -3,7 +3,6 @@ const Admin = require('../models/Admin');
 const bcrypt = require('bcryptjs');
 const { Sequelize } = require('sequelize');
 const jwt = require('jsonwebtoken');
-const Formidable = require('formidable');
 const cloudinary = require("cloudinary");
 require('dotenv/config');
 const SECRET = process.env.SEGREDO;
