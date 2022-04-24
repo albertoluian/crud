@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    
     "start": "sequelize db:migrate && node src/server.js",
     "dev": "nodemon src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -14,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "cloudinary": "^1.29.1",
     "core-util-is": "^1.0.3",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
