@@ -1,14 +1,10 @@
 const Sequelize = require('sequelize');
 const dbConfig = require('../config/database');
-// const Carro = require('../models/Carro');
 const connection = new Sequelize(dbConfig);
-const Usuario = require('../models/Usuario');
-const Inscrito = require('../models/Inscrito');
+const User = require('../models/User');
+const Registered = require('../models/Registered');
 const Admin = require('../models/Admin');
-// Carro.init(connection);
-//Carro.associate(connection.models);
 Admin.init(connection);
-Inscrito.init(connection);
-Usuario.init(connection);
-// Usuario.associate(connection.models);
+Registered.init(connection);
+User.init(connection);
 module.exports = connection;

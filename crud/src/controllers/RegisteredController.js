@@ -1,4 +1,4 @@
-const Inscrito = require('../models/Inscrito');
+const Registered = require('../models/Registered');
 const Admin = require('../models/Admin');
 const bcrypt = require('bcryptjs');
 const { Sequelize } = require('sequelize');
@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 require('dotenv/config');
 const SECRET = process.env.SEGREDO;
 const validar = require('./testaCPF.js');
-function verificarToken(token, id){
+function verifyToken(token, id){
   var resultado = true;
   jwt.verify(token, SECRET,(err, decoded)=>{
     if(!err)
@@ -77,13 +77,13 @@ module.exports = {
         reservista,
         vinculoUece,
         } =  JSON.parse(req.body.dados);
-       const inscritos = await Inscrito.findOne({where:Sequelize.or(
+       const registereds = await Registered.findOne({where:Sequelize.or(
          {email1:email1},{cpf:cpf},{telefone:telefone},{rg:rg},
          )
         }).catch(err => { throw new Error (err)});
-       if(inscritos)
+       if(registereds)
          return res.status(409).json({error: "Dados ja cadastrados"});
-       const inscrito = await Inscrito.create({
+       const registered = await Registered.create({
         nome,
         sexo,
         nomeMae,
@@ -142,7 +142,7 @@ module.exports = {
         vinculoUece
         })
         .catch(err => { throw new Error (err)});
-     return res.json("Inscrito com sucesso!!!");
+     return res.json("inscrito com sucesso!!!");
        
       
    }
@@ -154,12 +154,12 @@ module.exports = {
   async getAll(req, res, next){
     try{
     const token = req.headers['authorization'];
-    const verif = verificarToken(token);
+    const verif = verifyToken(token);
     if(verif){
     const admin = await Admin.findOne({where:{token:token}}).catch(err => { throw new Error (err)});
     if(admin){
-    const inscritos = await Inscrito.findAll().catch(err => { throw new Error (err)});
-    return res.json(inscritos);
+    const registereds = await Registered.findAll().catch(err => { throw new Error (err)});
+    return res.json(registereds);
     }
     else 
     return res.status(403).json("Token invalido");
@@ -175,13 +175,13 @@ async aprove(req, res, next){
   try{
   const {id} = req.params;
   const token = req.headers['authorization'];
-  const verif = verificarToken(token);
+  const verif = verifyToken(token);
   const admin = await Admin.findOne({where:{token:token}}).catch(err => { throw new Error (err)});
   if(verif && admin){
-    const inscritos1 = await Inscrito.findOne({where:{id:id}}).catch(err => { throw new Error (err)});
-  if(inscritos1){
-  const inscritos = await Inscrito.update({aprovado:true},{where:{id:id}}).catch(err => { throw new Error (err)});
-  return res.json(inscritos);
+    const registereds1 = await Registered.findOne({where:{id:id}}).catch(err => { throw new Error (err)});
+  if(registereds1){
+  const registereds = await Registered.update({aprovado:true},{where:{id:id}}).catch(err => { throw new Error (err)});
+  return res.json(registereds);
 }
 else
 return res.status(404).json("nao existe inscrito com tal id");
