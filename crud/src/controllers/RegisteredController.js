@@ -70,7 +70,9 @@ module.exports = {
         concorreraABolsa,
         realizaraSemBolsa,
         foto,
-        termo,
+        termo
+      } = JSON.parse(req.body.dados);
+      const {
         taxaOuIsencao,
         identificacao,
         ComprovanteVotacao,
@@ -78,7 +80,7 @@ module.exports = {
         documentosComprobatorios,
         reservista,
         vinculoUece
-      } = JSON.parse(req.body.dados);
+      } = JSON.parse(req.body.links);
       const registereds = await Registered.findOne({
         where: Sequelize.or(
           { email1: email1 }, { cpf: cpf }, { telefone: telefone }, { rg: rg },
