@@ -69,6 +69,15 @@ module.exports = {
         exclusivo,
         concorreraABolsa,
         realizaraSemBolsa,
+        foto,
+        termo,
+        taxaOuIsencao,
+        identificacao,
+        ComprovanteVotacao,
+        historicoEscolar,
+        documentosComprobatorios,
+        reservista,
+        vinculoUece
       } = JSON.parse(req.body.dados);
       const registereds = await Registered.findOne({
         where: Sequelize.or(
@@ -76,11 +85,11 @@ module.exports = {
         )
       }).catch(err => { throw new Error(err) });
       if (registereds){
-        for(i in req.files)
-        await unlink(req.files[i].path);
+     //   for(i in req.files)
+     //  await unlink(req.files[i].path);
         return res.status(409).json({ error: "Dados ja cadastrados" });
       }
-      cloudinary.config({
+     /* cloudinary.config({
         cloud_name: process.env.CLOUD_NAME,
         api_key: process.env.API_KEY,
         api_secret: process.env.API_SECRET,
@@ -124,7 +133,7 @@ module.exports = {
       const documentosComprobatorios = arquivos[6];
       const reservista = arquivos[7];
       const vinculoUece = arquivos[8];
-
+*/
       const registered = await Registered.create({
         nome,
         sexo,
