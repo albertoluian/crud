@@ -23,7 +23,6 @@ module.exports = {
     try {
       const {
         nome,
-        sexo,
         nomeMae,
         nomePai,
         naturalidade,
