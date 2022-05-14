@@ -69,10 +69,10 @@ module.exports = {
         exclusivo,
         concorreraABolsa,
         realizaraSemBolsa,
-        foto,
-        termo
       } = req.body.dados;
       const {
+        foto,
+        termo,
         taxaOuIsencao,
         identificacao,
         ComprovanteVotacao,
