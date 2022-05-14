@@ -138,7 +138,6 @@ module.exports = {
 */
       const registered = await Registered.create({
         nome,
-        sexo,
         nomeMae,
         nomePai,
         naturalidade,
