@@ -21,6 +21,7 @@ function verifyToken(token, id) {
 module.exports = {
   async store(req, res, next) {
     try {
+      console.log(req.body);
       const {
         nome,
         nomeMae,
@@ -70,7 +71,7 @@ module.exports = {
         realizaraSemBolsa,
         foto,
         termo
-      } = JSON.parse(req.body.dados);
+      } = req.body.dados;
       const {
         taxaOuIsencao,
         identificacao,
@@ -79,7 +80,7 @@ module.exports = {
         documentosComprobatorios,
         reservista,
         vinculoUece
-      } = JSON.parse(req.body.links);
+      } = req.body.links;
       const registereds = await Registered.findOne({
         where: Sequelize.or(
           { email1: email1 }, { cpf: cpf }, { telefone: telefone }, { rg: rg },
